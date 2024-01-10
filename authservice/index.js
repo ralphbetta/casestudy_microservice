@@ -4,12 +4,11 @@ const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./src/config/site");
+const User = require("./src/model/account.model");
 
-// const appRouther = require("./routes/app.routes");
-
-const Connection = require("./src/model/database");
-const Config = require("./src/config/site");
-// const SocketService = require("./service/socket.service");
+const CONNECTION = require("./src/model/database");
+const CONFIG = require("./src/config/site");
+const router = require("./src/routes/authentication.route");
 
 class Server {
   static boot() {
@@ -19,7 +18,7 @@ class Server {
       allowedHeaders: ["Content-Type", "Authorization"],
       credentials: true,
       preflightContinue: false,
-      transports: ['websocket'],
+      transports: ["websocket"],
     };
 
     app.use(cors(corsOptions));
@@ -29,22 +28,34 @@ class Server {
     /*----------------------< DEFAULT ROUTE >----------------*/
 
     app.use(express.static(path.join(__dirname, "/public")));
-    app.get("/", (req, res) => { res.json(`Bidding Service running....`)});
+    app.get("/", (req, res) => {
+      res.json(`Bidding Service running....`);
+    });
+
+    app.use("/api", router);
+
+    //error handling
+    app.use((error, req, res, next) => {
+      console.log(error);
+      const status = error.statusCode || 500;
+      const message = error.message;
+      res.status(status).json({ message: message });
+    });
 
     const PORT = config.site.PORT;
-    const DBPORT = Config.site.DBPORT;
+    const DBPORT = CONFIG.site.DBPORT;
     const IP = config.site.HOST;
 
-    Connection.sync()
-      .then((result) => {
+    CONNECTION.sync().then((result) => {
+
         console.log("Database connected! Running Server");
-
+       
         const server = app.listen(PORT, () => {
-          console.log(`Server is running http://${IP}:${PORT} PSQL:${DBPORT}`);
-        });
 
-      })
-      .catch((err) => console.log("Connection Error", err));
+          console.log(`Server is running http://${IP}:${PORT} PSQL:${DBPORT}`);
+
+        });
+      }).catch((err) => console.log("Connection Error", err));
   }
 }
 
