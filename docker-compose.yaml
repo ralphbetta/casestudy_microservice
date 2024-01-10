@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+
+  # DATABASES ---------------------------- Binding
+  micropsql:
+    container_name: micropsql_c
+    image: postgres:12
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=reportingservice
+      - POSTGRES_USER=psqlusername
+      - POSTGRES_PASSWORD=psqlpassword
+    volumes:
+      - micropsql_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+  #  # DATABASES ---------------------------- To Add DATABASE FROM ANOTHER SERVER
+  # roompsql:
+  #   container_name: roompsql_c
+  #   image: postgres:12
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5433:5432"
+  #   environment:
+  #     - POSTGRES_DB=noticedatabase
+  #     - POSTGRES_USER=noticeusername
+  #     - POSTGRES_PASSWORD=noticepassword
+  #   volumes:
+  #     - room_db_data:/var/lib/postgresql/data
+
+volumes:
+  micropsql_db_data: {}
+  # room_db_data: {}
