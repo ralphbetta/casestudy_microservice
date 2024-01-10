@@ -5,10 +5,12 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./src/config/site");
 const User = require("./src/model/account.model");
+const amqp = require("amqplib");
 
 const CONNECTION = require("./src/model/database");
 const CONFIG = require("./src/config/site");
 const router = require("./src/routes/authentication.route");
+const RabbitMQ = require("./src/service/rabbitmq.service");
 
 class Server {
   static boot() {
@@ -25,11 +27,19 @@ class Server {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
+    RabbitMQ.connect("PRODUCT");
+
     /*----------------------< DEFAULT ROUTE >----------------*/
 
     app.use(express.static(path.join(__dirname, "/public")));
+    
     app.get("/", (req, res) => {
+
+      const data = {name: "Xena", userEmail: "xena@gmail.com"};
+      RabbitMQ.sendToQueue("AUTHENTICATION", data);
+
       res.json(`Bidding Service running....`);
+
     });
 
     app.use("/api", router);
@@ -46,16 +56,15 @@ class Server {
     const DBPORT = CONFIG.site.DBPORT;
     const IP = config.site.HOST;
 
-    CONNECTION.sync().then((result) => {
-
+    CONNECTION.sync()
+      .then((result) => {
         console.log("Database connected! Running Server");
-       
+
         const server = app.listen(PORT, () => {
-
           console.log(`Server is running http://${IP}:${PORT} PSQL:${DBPORT}`);
-
         });
-      }).catch((err) => console.log("Connection Error", err));
+      })
+      .catch((err) => console.log("Connection Error", err));
   }
 }
 
