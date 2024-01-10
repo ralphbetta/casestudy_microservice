@@ -1,7 +1,6 @@
-const Account = require("../model/account.model");
+const {Account} = require("../model/database")
 const TokenMiddleware = require("../middleware/token.middleware");
 const ResponseMessage = require("../config/response");
-const { use } = require("../routes/authentication.route");
 class Authentication {
   static async login(req, res) {
     try {

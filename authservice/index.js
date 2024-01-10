@@ -7,7 +7,7 @@ const config = require("./src/config/site");
 const User = require("./src/model/account.model");
 const amqp = require("amqplib");
 
-const CONNECTION = require("./src/model/database");
+const {db} = require("./src/model/database");
 const CONFIG = require("./src/config/site");
 const router = require("./src/routes/authentication.route");
 const RabbitMQ = require("./src/service/rabbitmq.service");
@@ -32,7 +32,7 @@ class Server {
     /*----------------------< DEFAULT ROUTE >----------------*/
 
     app.use(express.static(path.join(__dirname, "/public")));
-    
+
     app.get("/", (req, res) => {
 
       const data = {name: "Xena", userEmail: "xena@gmail.com"};
@@ -56,7 +56,7 @@ class Server {
     const DBPORT = CONFIG.site.DBPORT;
     const IP = config.site.HOST;
 
-    CONNECTION.sync()
+    db.sequelize.sync()
       .then((result) => {
         console.log("Database connected! Running Server");
 

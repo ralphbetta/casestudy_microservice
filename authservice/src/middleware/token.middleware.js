@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Account  = require('../model/account.model');
+const {Account}  = require('../model/database');
 
 class TokenMiddleware {
 
@@ -22,6 +22,8 @@ class TokenMiddleware {
 
             const decoded = jwt.verify(token, process.env.JWT_SECRETE);
             const email = decoded.userdata.email;
+
+            console.log(email);
 
             Account.findOne({ where: { email: email } }).then(async (user) => {
 
