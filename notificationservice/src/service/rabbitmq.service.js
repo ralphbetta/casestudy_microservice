@@ -41,34 +41,40 @@ class RabbitMQ {
 
     static async monitorQueues(channel) {
 
+        const NOTICETYPE = {
+            ROOMCREATE: "ROOMCREATE",
+            ROOMJOIN: "ROOMJOIN",
+            ROOMUPDATE: "ROOMUPDATE",
+            BIDDING: "BIDDING" 
+        }
+
         channel.consume(AppService.NOTIFICATION, response => {
             const info = JSON.parse(response.content);
             const data = JSON.stringify(info.data);
 
-            console.log(info)
+            if(info.type == NOTICETYPE.ROOMCREATE){
+                
+                //socket trigger all for room refresh
+
+            }else if(info.type == NOTICETYPE.ROOMJOIN){
+                //socket-trigger for participant refresh
+
+                // if closed, generate invoice to the highest bigger
+            }else if(info.type == NOTICETYPE.ROOMUPDATE){
+
+                // queue room details to invoice service to fetch biddings an and generate invoice & notify back for socket communication
+
+            }else if(info.type == NOTICETYPE.BIDDING){
+
+                //trigger for bidding request.
+            }
 
 
+            console.log(info.type)
 
-            // channel.ack(response); //acknowledge the item in the queue
+            // channel.ack(response); //acknowledge queue object
+            // RabbitMQ.sendToQueue("PRODUCT", { "status": `Seen. Item sent: ${data}` }) // and respond if needed;
 
-
-
-
-            //notify when bidding start
-            //notify highest bidder for each bids
-            //notify joining room
-
-            // if (info.type === 'CREATEPRODUCT') {
-            //     ProductController.createProduct(data);
-            //     RabbitMQ.sendToQueue("PRODUCT", { "status": `Seen. Item sent: ${data}` }
-            // );
-            // }else if (info.type == 'UPDATEPRODUCT'){
-            //     ProductController.updateProduct(data);
-            // }else if (info.type == 'DELETEPRODUCT'){
-            //     console.log(`data seen for delete ${data}`);
-            //     ProductController.deleteProduct(data)
-            // }
-         
         });
 
     }
