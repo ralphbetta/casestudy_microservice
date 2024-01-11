@@ -27,7 +27,7 @@ class Server {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    RabbitMQ.connect("PRODUCT");
+    RabbitMQ.connect("AUTHENTICATION");
 
     /*----------------------< DEFAULT ROUTE >----------------*/
 
@@ -38,13 +38,14 @@ class Server {
       const data = {name: "Xena", userEmail: "xena@gmail.com"};
       RabbitMQ.sendToQueue("AUTHENTICATION", data);
 
-      res.json(`Bidding Service running....`);
+      res.json(`Authentication Service Running....`);
 
     });
 
     app.use("/api", router);
 
-    //error handling
+    /*----------------------< HANDLING ERROR >----------------*/
+
     app.use((error, req, res, next) => {
       console.log(error);
       const status = error.statusCode || 500;
@@ -58,10 +59,10 @@ class Server {
 
     db.sequelize.sync()
       .then((result) => {
-        console.log("Database connected! Running Server");
+        console.log("Authentication Database connected!");
 
         const server = app.listen(PORT, () => {
-          console.log(`Server is running http://${IP}:${PORT} PSQL:${DBPORT}`);
+          console.log(`Server running @ http://${IP}:${PORT} PSQL:${DBPORT}`);
         });
       })
       .catch((err) => console.log("Connection Error", err));

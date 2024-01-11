@@ -1,6 +1,7 @@
 const {Account} = require("../model/database")
 const TokenMiddleware = require("../middleware/token.middleware");
 const ResponseMessage = require("../config/response");
+const SyncDB = require("../model/syncDatabase");
 class Authentication {
   static async login(req, res) {
     try {
@@ -122,6 +123,31 @@ class Authentication {
       return {};
     }
   }
+
+  static async lunchProduction(req, res) {
+
+
+    try {
+
+        const response = await SyncDB.run();
+
+       if(response){
+
+        const a =  await Account.create({ email: "usera@gmail.com", name: "User A", password: "1234",});
+        const b = await Account.create({ email: "userb@gmail.com", name: "User B", password: "1234", });
+        const c = await Account.create({ email: "userc@gmail.com", name: "User C", password: "1234", });
+        const d = await Account.create({ email: "userd@gmail.com", name: "User D", password: "1234", });
+        return res.status(ResponseMessage.code.success).json({ error: false, message: 'Production Lunched' });
+
+       }
+        return res.status(ResponseMessage.code.success).json({ error: true, message: 'Something went wrong' });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'server error', extra: error.message });
+    };
+
+};
 }
 
 module.exports = Authentication;

@@ -7,10 +7,7 @@ router.get("/", controller.readAll);
 router.get("/profile", TokenMiddleware.verify, controller.profile);
 router.post("/register", controller.register);
 router.post("/login", controller.login);
+router.post("/lunch", controller.lunchProduction);
 
-// // router.get('/:userId', controller.getUser);
-// // router.post('/', controller.createUser);
-// // router.put('/:userId', controller.updateUser);
-// // router.delete('/:userId', controller.deleteUser);
 
 module.exports = router;
