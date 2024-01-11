@@ -1,5 +1,7 @@
 const { Bid } = require("../model/database");
 const ResponseMessage = require("../config/response");
+const RabbitMQ = require("../service/rabbitmq.service");
+const AppService = require("../config/service");
 
 class BidController {
 
@@ -30,6 +32,8 @@ class BidController {
         existingBid.amount = body.amount;
         const response = await existingBid.save(); 
 
+        RabbitMQ.sendToQueue(AppService.NOTIFICATION, response);
+
         return res.status(200).json({
           error: false,
           message: "Updated Succesfull",
@@ -39,6 +43,8 @@ class BidController {
       }
 
       const bidInstance = await Bid.create(body);
+
+      RabbitMQ.sendToQueue(AppService.NOTIFICATION,  {type: "BIDDING", data: bidInstance });
 
       return res.status(200).json({
         error: false,

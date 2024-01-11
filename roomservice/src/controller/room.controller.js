@@ -1,6 +1,8 @@
 const { Room, Participant } = require("../model/database");
 const TokenMiddleware = require("../middleware/token.middleware");
 const ResponseMessage = require("../config/response");
+const RabbitMQ = require("../service/rabbitmq.service");
+const AppService = require("../config/service");
 
 class RoomController {
 
@@ -19,6 +21,8 @@ class RoomController {
         u_id: req.userData.id,
         room_id: roomInstance.id,
       });
+
+      RabbitMQ.sendToQueue(AppService.NOTIFICATION, {type: "ROOMCREATE", data: roomInstance });
 
       return res.status(200).json({
         error: false,
@@ -71,6 +75,8 @@ class RoomController {
         room_id: room_id,
       });
 
+      RabbitMQ.sendToQueue(AppService.NOTIFICATION, {type: "ROOMJOIN", data: roomInstance });
+
       //socket notification
 
       return res.status(200).json({
@@ -94,6 +100,23 @@ class RoomController {
         error: false,
         message: "Succesfull",
         data: participantInstance,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "server error", extra: error.message });
+    }
+  }
+
+  static async rooms(req, res) {
+
+    try {
+      const roomInstances = await Room.findAll({
+        order: [['createdAt', 'DESC']] // Order by createdAt in descending order
+    });
+
+      return res.status(200).json({
+        error: false,
+        message: "Succesfull",
+        data: roomInstances,
       });
     } catch (error) {
       res.status(500).json({ error: "server error", extra: error.message });
@@ -126,17 +149,19 @@ class RoomController {
           .json({ error: true, message: "Unauthorized Action" });
       }
 
+      RabbitMQ.sendToQueue(AppService.NOTIFICATION, {type: "ROOMUPDATE", data: roomInstance });
 
-      const RoomInstance = await Room.update({status: req.body.status});
+      const response = await roomInstance.update({status: req.body.status});
 
       //socket notification
 
       return res.status(200).json({
         error: false,
         message: "Succesfull",
-        data: RoomInstance,
+        data: response,
       });
     } catch (error) {
+      console.error(error);
       res.status(500).json({ error: "server error", extra: error.message });
     }
   }

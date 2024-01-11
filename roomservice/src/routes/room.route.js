@@ -7,6 +7,8 @@ router.post("/room", TokenMiddleware.verify, controller.create);
 router.put("/room/:room_id", TokenMiddleware.verify, controller.updateRoom);
 router.post("/room/:room_id", TokenMiddleware.verify, controller.joinRoom);
 router.get("/room/:room_id/participants", TokenMiddleware.verify, controller.participants);
+router.get("/rooms", TokenMiddleware.verify, controller.rooms);
+
 
 
 

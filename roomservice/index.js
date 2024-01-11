@@ -28,7 +28,10 @@ class Server {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    RabbitMQ.connect(AppService.NOTIFICATION);
+    RabbitMQ.connect(AppService.ROOM).then((channel) => {
+
+        RabbitMQ.monitorQueues(channel);
+    });
 
     /*----------------------< DEFAULT ROUTE >----------------*/
 

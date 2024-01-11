@@ -1,5 +1,6 @@
 
 const amqp = require('amqplib');
+const AppService = require('../config/service');
 
 class RabbitMQ {
 
@@ -40,21 +41,27 @@ class RabbitMQ {
 
     static async monitorQueues(channel) {
 
-        channel.consume('REPORTINGSERVICE', response => {
+        channel.consume(AppService.ROOM, response => {
             const info = JSON.parse(response.content);
             const data = JSON.stringify(info.data);
             channel.ack(response); //acknowledge the item in the queue
-            console.log(`this is the streamed ${data}`);
-            if (info.type === 'CREATEPRODUCT') {
-                ProductController.createProduct(data);
-                RabbitMQ.sendToQueue("PRODUCT", { "status": `Seen. Item sent: ${data}` }
-            );
-            }else if (info.type == 'UPDATEPRODUCT'){
-                ProductController.updateProduct(data);
-            }else if (info.type == 'DELETEPRODUCT'){
-                console.log(`data seen for delete ${data}`);
-                ProductController.deleteProduct(data)
-            }
+
+            console.log(`this is the streamed ${data} - ${info}`);
+
+            //notify when bidding start
+            //notify highest bidder for each bids
+            //notify joining room
+
+            // if (info.type === 'CREATEPRODUCT') {
+            //     ProductController.createProduct(data);
+            //     RabbitMQ.sendToQueue("PRODUCT", { "status": `Seen. Item sent: ${data}` }
+            // );
+            // }else if (info.type == 'UPDATEPRODUCT'){
+            //     ProductController.updateProduct(data);
+            // }else if (info.type == 'DELETEPRODUCT'){
+            //     console.log(`data seen for delete ${data}`);
+            //     ProductController.deleteProduct(data)
+            // }
          
         });
 
