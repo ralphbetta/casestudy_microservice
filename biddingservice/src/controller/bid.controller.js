@@ -1,5 +1,4 @@
 const { Bid } = require("../model/database");
-const TokenMiddleware = require("../middleware/token.middleware");
 const ResponseMessage = require("../config/response");
 
 class BidController {
