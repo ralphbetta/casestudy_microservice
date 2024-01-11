@@ -17,12 +17,27 @@ services:
       - micropsql_db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  # NGINIX ---------------------------- Setup
+
+  nginx:
+    build: ./nginx
+    container_name: ms_nginx
+    # depends_on:
+    #     - store
+    #     - users
+    ports:
+        - "80:80"
+
+  # RABITTMQ ---------------------------- Binding
+
   rabbitmq:
     image: rabbitmq:3.8-management-alpine
     container_name: rabbitmq
     ports:
       - "5672:5672"    # AMQP protocol port
       - "15672:15672"  # HTTP management UI
+
+
     # volumes:
     #   - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
     #   - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
