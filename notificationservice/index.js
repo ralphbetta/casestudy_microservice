@@ -12,6 +12,7 @@ const CONFIG = require("./src/config/site");
 const router = require("./src/routes/bidding.route");
 const RabbitMQ = require("./src/service/rabbitmq.service");
 const AppService = require("./src/config/service");
+const SocketService = require("./src/service/socket.service");
 
 class Server {
   static boot() {
@@ -63,6 +64,9 @@ class Server {
 
         const server = app.listen(PORT, () => {
           console.log(`Server is running http://${IP}:${PORT} PSQL:${DBPORT}`);
+
+          SocketService.initialize(server, app);
+
         });
 
       }).catch((err) => console.log("Connection Error", err));
