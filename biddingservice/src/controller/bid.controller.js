@@ -60,14 +60,22 @@ class BidController {
     const { room_id } = req.params;
 
     try {
+
+      const maxBidForRoom = await Bid.max('amount', { where: { room_id: room_id } });
+
       const bidInstances = await Bid.findAll({
         where: { room_id },
       });
 
+      const response = {
+        maxBid: maxBidForRoom,
+        bids: bidInstances
+      }
+
       return res.status(200).json({
         error: false,
         message: "Succesfull",
-        data: bidInstances,
+        data: response,
       });
     } catch (error) {
       res.status(500).json({ error: "server error", extra: error.message });
