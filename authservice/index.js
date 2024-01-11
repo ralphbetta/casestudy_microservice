@@ -11,6 +11,7 @@ const {db} = require("./src/model/database");
 const CONFIG = require("./src/config/site");
 const router = require("./src/routes/authentication.route");
 const RabbitMQ = require("./src/service/rabbitmq.service");
+const AppService = require("./src/config/service");
 
 class Server {
   static boot() {
@@ -27,7 +28,7 @@ class Server {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    RabbitMQ.connect("AUTHENTICATION");
+    RabbitMQ.connect(AppService.AUTHENTICATION);
 
     /*----------------------< DEFAULT ROUTE >----------------*/
 
