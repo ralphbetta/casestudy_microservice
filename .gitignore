@@ -3,3 +3,18 @@
 /notificationservice/node_modules
 /invoiceservice/node_modules
 /authservice/node_modules
+
+
+/jtconnect/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/jtconnect/android/app/debug
+/jtconnect/android/app/profile
+/jtconnect/android/app/release
+
