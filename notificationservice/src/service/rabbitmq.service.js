@@ -39,10 +39,15 @@ class RabbitMQ {
     };
 
     channel.consume(AppService.NOTIFICATION, (response) => {
+
       const info = JSON.parse(response.content);
       const data = info.data //   JSON.stringify(info.data);
 
+    //   console.log(info);
+
       if(global.io == undefined){
+        channel.ack(response); //acknowledge queue object
+        console.log("---------------------io is undefined----------------------");
         return;
       }
 
@@ -58,22 +63,20 @@ class RabbitMQ {
 
         global.io.emit(NOTICETYPE.ROOMUPDATE, {}); // room closed
 
-        // queue room details to invoice service to fetch biddings an and generate invoice & notify back for socket communication
-
-        global.io.to(`${info.data.u_id}`).emit(NOTICETYPE.INVOICE, adminNotice); //invoice ready
+        this.sendToQueue(AppService.INVOICE, {type:'closed', data: info.data});
 
       } else if (info.type == NOTICETYPE.BIDDING) {
 
         global.io.emit(NOTICETYPE.BIDDING, {});
 
         //trigger for bidding request.
+      }else if(info.type == NOTICETYPE.INVOICE){
+
+        console.log(info)
+        global.io.to(`${info.data.bidder_id}`).emit(NOTICETYPE.INVOICE, info); //invoice ready
       }
 
-      console.log(info.type);
-      channel.ack(response); //acknowledge queue object
-
-      // RabbitMQ.sendToQueue("PRODUCT", { "status": `Seen. Item sent: ${data}` }) // and respond if needed;
-
+    channel.ack(response); //acknowledge queue object
       
     });
   }

@@ -19,14 +19,42 @@ services:
 
   # NGINIX ---------------------------- Setup
 
-  nginx:
-    build: ./nginx
-    container_name: ms_nginx
-    # depends_on:
-    #     - store
-    #     - users
-    ports:
-        - "80:80"
+  # nginx:
+  #   build: ./nginx
+  #   container_name: ms_nginx
+  #   # depends_on:
+  #   #     - store
+  #   #     - users
+  #   ports:
+  #       - "80:80"
+
+  # webserver:
+  #   image: nginx:mainline-alpine
+  #   build: ./nginx
+  #   container_name: webserver
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - web-root:/var/www/html
+  #     - ./nginx-conf:/etc/nginx/conf.d
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #   # depends_on:
+  #   #   - nodejs
+  #   networks:
+  #     - app-network
+
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - web-root:/var/www/html
+  #   depends_on:
+  #     - webserver
+  #   command: certonly --webroot --webroot-path=/var/www/html --email sammy@your_domain --agree-tos --no-eff-email --staging -d your_domain  -d www.your_domain 
 
   # RABITTMQ ---------------------------- Binding
 
@@ -51,7 +79,7 @@ services:
     #     - rabbitmq_nodejs
 
 networks:
-  rabbitmq_nodejs:
+  app-network:
     driver: bridge
 
 
@@ -71,4 +99,7 @@ networks:
 
 volumes:
   micropsql_db_data: {}
+  # certbot-etc:
+  # certbot-var:
+  # web-root:
   # room_db_data: {}

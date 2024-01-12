@@ -34,7 +34,7 @@ class Server {
 
     app.use(express.static(path.join(__dirname, "/public")));
 
-    app.get("/", (req, res) => {res.json(`Room Service running....`)});
+    app.get("/", (req, res) => {res.json(`Bidding Service running....`)});
 
     app.use("/api", router);
 

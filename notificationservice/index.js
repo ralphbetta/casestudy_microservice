@@ -41,7 +41,7 @@ class Server {
 
     app.use(express.static(path.join(__dirname, "/public")));
 
-    app.get("/", (req, res) => {res.json(`Room Service running....`)});
+    app.get("/", (req, res) => {res.json(`Notification Service running....`)});
 
     app.use("/api", router);
 
@@ -60,7 +60,7 @@ class Server {
 
     db.sequelize.sync().then((result) => {
 
-        console.log("Bidding Database Connected!");
+        console.log("Notification Database Connected!");
 
         const server = app.listen(PORT, () => {
           console.log(`Server is running http://${IP}:${PORT} PSQL:${DBPORT}`);
