@@ -20,6 +20,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      payment_status: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: "Pending",
+      },
       auction_date:{
         type: Sequelize.DATE,
         allowNull: false,

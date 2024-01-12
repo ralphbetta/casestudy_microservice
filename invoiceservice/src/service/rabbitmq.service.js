@@ -78,8 +78,8 @@ class RabbitMQ {
 
             const biddingInstance = await httpservice.get(url, "token");
 
-            console.log(biddingInstance.data);
-            
+            console.log("xyz",biddingInstance.data);
+
             const bidData = biddingInstance.data.data;
 
             if(!bidData){

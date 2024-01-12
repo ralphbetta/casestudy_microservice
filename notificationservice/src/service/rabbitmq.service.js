@@ -41,9 +41,9 @@ class RabbitMQ {
     channel.consume(AppService.NOTIFICATION, (response) => {
 
       const info = JSON.parse(response.content);
-      const data = info.data //   JSON.stringify(info.data);
+      const data = info.data 
+      //JSON.stringify(info.data);
 
-    //   console.log(info);
 
       if(global.io == undefined){
         channel.ack(response); //acknowledge queue object
@@ -61,7 +61,7 @@ class RabbitMQ {
 
       } else if (info.type == NOTICETYPE.ROOMUPDATE) {
 
-        global.io.emit(NOTICETYPE.ROOMUPDATE, {}); // room closed
+        global.io.emit(NOTICETYPE.ROOMUPDATE, {}); 
 
         this.sendToQueue(AppService.INVOICE, {type:'closed', data: info.data});
 
@@ -69,11 +69,10 @@ class RabbitMQ {
 
         global.io.emit(NOTICETYPE.BIDDING, {});
 
-        //trigger for bidding request.
       }else if(info.type == NOTICETYPE.INVOICE){
 
         console.log(info)
-        global.io.to(`${info.data.bidder_id}`).emit(NOTICETYPE.INVOICE, info); //invoice ready
+        global.io.to(`${info.data.bidder_id}`).emit(NOTICETYPE.INVOICE, info); 
       }
 
     channel.ack(response); //acknowledge queue object
