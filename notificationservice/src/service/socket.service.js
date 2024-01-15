@@ -31,6 +31,8 @@ class SocketService {
       const connectionMessage = `connection with user Id ${socket.userId} and socket id ${socket.id} is successful`;
       const disconnectMessage = `connection with user Id ${socket.userId} and socket id ${socket.id} is lost!`;
 
+      console.log(connectionMessage);
+
       socket.join(socket.userId);
 
       /*-----------------------------------------------

@@ -51,6 +51,8 @@ class RabbitMQ {
         return;
       }
 
+      console.log("bid", info)
+
       if (info.type == NOTICETYPE.ROOMCREATE) {
 
         global.io.emit(NOTICETYPE.ROOMCREATE, {data});
@@ -66,6 +68,7 @@ class RabbitMQ {
         this.sendToQueue(AppService.INVOICE, {type:'closed', data: info.data});
 
       } else if (info.type == NOTICETYPE.BIDDING) {
+        
 
         global.io.emit(NOTICETYPE.BIDDING, {});
 

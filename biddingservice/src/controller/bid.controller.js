@@ -32,7 +32,7 @@ class BidController {
         existingBid.amount = body.amount;
         const response = await existingBid.save(); 
 
-        RabbitMQ.sendToQueue(AppService.NOTIFICATION, response);
+        RabbitMQ.sendToQueue(AppService.NOTIFICATION,  {type: "BIDDING", data: response });
 
         return res.status(200).json({
           error: false,
