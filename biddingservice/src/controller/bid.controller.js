@@ -61,7 +61,7 @@ class BidController {
   }
 
 
-  static async bids(req, res) {
+  static async accountbids(req, res) {
     const { room_id } = req.params;
 
     try {
@@ -81,6 +81,23 @@ class BidController {
         error: false,
         message: "Succesfull",
         data: response,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "server error", extra: error.message });
+    }
+  }
+
+
+  static async alltbids(req, res) {
+
+    try {
+
+      const bidInstances = await Bid.findAll();
+
+      return res.status(200).json({
+        error: false,
+        message: "Succesfull",
+        data: bidInstances,
       });
     } catch (error) {
       res.status(500).json({ error: "server error", extra: error.message });

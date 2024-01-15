@@ -9,7 +9,14 @@ class RoomController {
   static async create(req, res) {
     try {
 
-      const body = {name: req.userData.name, u_id: req.userData.id, auction: req.body.auction};
+      const body = {
+        name: req.userData.name,
+        u_id: req.userData.id,
+        auction: req.body.auction,
+        category: req.body.category,
+        description: req.body.description,
+        min_auction: req.body.min_auction
+      };
 
       const roomInstance = await Room.create(body);
 
