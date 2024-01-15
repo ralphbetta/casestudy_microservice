@@ -19,6 +19,8 @@ class InvoiceController {
     try {
       const invoiceInstances = await Invoice.findAll({
         where: { bidder_id: id },
+        order: [['createdAt', 'ASC']]
+
       });
 
       return res.status(200).json({
@@ -36,13 +38,14 @@ class InvoiceController {
       const invoiceInstance = await Invoice.findOne({
         where: { invoice_id: req.body.invoice_id },
       });
-      invoiceInstance.payment_status = paid;
+      invoiceInstance.payment_status = "paid";
+
       const response = await invoiceInstance.save();
 
       return res.status(200).json({
         error: false,
         message: "Succesfull",
-        data: invoiceInstance,
+        data: response,
       });
     } catch (error) {
       res.status(500).json({ error: "server error", extra: error.message });
