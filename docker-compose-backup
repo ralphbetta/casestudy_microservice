@@ -1,0 +1,121 @@
+version: "3.9"
+
+services:
+
+  # DATABASES ---------------------------- Binding
+  micropsql:
+    container_name: micropsql_c
+    image: postgres:12
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=reportingservice
+      - POSTGRES_USER=psqlusername
+      - POSTGRES_PASSWORD=psqlpassword
+    volumes:
+      - micropsql_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  authservice:
+    build: ./authservice
+    container_name: authservice_c
+    ports:
+      - '8080:8080'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=authenticationservice
+      - PORT=8080
+      - DB_HOST=127.0.0.1
+    depends_on:
+      - micropsql
+      - rabbitmq
+    volumes:
+      - ./authservice:/app
+      - /Users/betta/Documents/microserv/casestudy/authservice/node_modules
+
+  # NGINIX ---------------------------- Setup
+
+  # nginx:
+  #   build: ./nginx
+  #   container_name: ms_nginx
+  #   # depends_on:
+  #   #     - store
+  #   #     - users
+  #   ports:
+  #       - "80:80"
+
+  # webserver:
+  #   image: nginx:mainline-alpine
+  #   build: ./nginx
+  #   container_name: webserver
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - web-root:/var/www/html
+  #     - ./nginx-conf:/etc/nginx/conf.d
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #   # depends_on:
+  #   #   - nodejs
+  #   networks:
+  #     - app-network
+
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - web-root:/var/www/html
+  #   depends_on:
+  #     - webserver
+  #   command: certonly --webroot --webroot-path=/var/www/html --email sammy@your_domain --agree-tos --no-eff-email --staging -d your_domain  -d www.your_domain 
+
+  # RABITTMQ ---------------------------- Binding
+
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"    # AMQP protocol port
+      - "15672:15672"  # HTTP management UI
+    # volumes:
+    #   - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+    #   - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+    # environment:
+    #   - RABBITMQ_DEFAULT_USER = admin
+    #   - RABBITMQ_DEFAULT_PASS = passw123
+    # restart: always
+
+    # networks:
+    #     - rabbitmq_nodejs
+
+networks:
+  app-network:
+    driver: bridge
+
+
+  #  # DATABASES ---------------------------- To Add DATABASE FROM ANOTHER SERVER
+  # roompsql:
+  #   container_name: roompsql_c
+  #   image: postgres:12
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5433:5432"
+  #   environment:
+  #     - POSTGRES_DB=noticedatabase
+  #     - POSTGRES_USER=noticeusername
+  #     - POSTGRES_PASSWORD=noticepassword
+  #   volumes:
+  #     - room_db_data:/var/lib/postgresql/data
+
+volumes:
+  micropsql_db_data: {}
+  # certbot-etc:
+  # certbot-var:
+  # web-root:
+  # room_db_data: {}

@@ -17,89 +17,87 @@ services:
       - micropsql_db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  # NGINIX ---------------------------- Setup
-
-  # nginx:
-  #   build: ./nginx
-  #   container_name: ms_nginx
-  #   # depends_on:
-  #   #     - store
-  #   #     - users
-  #   ports:
-  #       - "80:80"
-
-  # webserver:
-  #   image: nginx:mainline-alpine
-  #   build: ./nginx
-  #   container_name: webserver
-  #   restart: unless-stopped
-  #   ports:
-  #     - "80:80"
-  #   volumes:
-  #     - web-root:/var/www/html
-  #     - ./nginx-conf:/etc/nginx/conf.d
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #   # depends_on:
-  #   #   - nodejs
-  #   networks:
-  #     - app-network
-
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #     - web-root:/var/www/html
-  #   depends_on:
-  #     - webserver
-  #   command: certonly --webroot --webroot-path=/var/www/html --email sammy@your_domain --agree-tos --no-eff-email --staging -d your_domain  -d www.your_domain 
-
-  # RABITTMQ ---------------------------- Binding
-
-  rabbitmq:
-    image: rabbitmq:3.8-management-alpine
-    container_name: rabbitmq
+  authservice:
+    build: ./authservice
+    container_name: authservice_c
     ports:
-      - "5672:5672"    # AMQP protocol port
-      - "15672:15672"  # HTTP management UI
+      - '8080:8080'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=authenticationservice
+      - PORT=8080
+      - DB_HOST=micropsql
+      - JWT_SECRETE=RESTFULAPIs
+      - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+    depends_on:
+      - micropsql
+    volumes:
+      - ./authservice:/app
+      - /Users/betta/Documents/microserv/casestudy/authservice/node_modules
 
+  biddingservice:
+    build: ./biddingservice
+    container_name: biddingservice_c
+    ports:
+      - '8081:8081'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=binddingservice
+      - PORT=8081
+      - DB_HOST=micropsql
+      - JWT_SECRETE=RESTFULAPIs
+      - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+    depends_on:
+      - micropsql
+    volumes:
+      - ./biddingservice:/app
+      - /Users/betta/Documents/microserv/casestudy/biddingservice/node_modules
 
-    # volumes:
-    #   - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-    #   - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  invoiceservice:
+    build: ./invoiceservice
+    container_name: invoiceservice_c
+    ports:
+      - '8084:8084'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=invoiceservice
+      - PORT=8084
+      - DB_HOST=micropsql
+      - JWT_SECRETE=RESTFULAPIs
+      - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+    depends_on:
+      - micropsql
+    volumes:
+      - ./invoiceservice:/app
+      - /Users/betta/Documents/microserv/casestudy/invoiceservice/node_modules
 
-    # environment:
-    #   - RABBITMQ_DEFAULT_USER = admin
-    #   - RABBITMQ_DEFAULT_PASS = passw123
-    # restart: always
+  notificationservice:
+    build: ./notificationservice
+    container_name: notificationservice_c
+    ports:
+      - '8082:8082'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=notificationservice
+      - PORT=8082
+      - DB_HOST=micropsql
+      - JWT_SECRETE=RESTFULAPIs
+      - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+    depends_on:
+      - micropsql
+    volumes:
+      - ./notificationservice:/app
+      - /Users/betta/Documents/microserv/casestudy/notificationservice/node_modules
 
-    # networks:
-    #     - rabbitmq_nodejs
 
 networks:
   app-network:
     driver: bridge
 
-
-  #  # DATABASES ---------------------------- To Add DATABASE FROM ANOTHER SERVER
-  # roompsql:
-  #   container_name: roompsql_c
-  #   image: postgres:12
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5433:5432"
-  #   environment:
-  #     - POSTGRES_DB=noticedatabase
-  #     - POSTGRES_USER=noticeusername
-  #     - POSTGRES_PASSWORD=noticepassword
-  #   volumes:
-  #     - room_db_data:/var/lib/postgresql/data
-
 volumes:
   micropsql_db_data: {}
-  # certbot-etc:
-  # certbot-var:
-  # web-root:
-  # room_db_data: {}
+

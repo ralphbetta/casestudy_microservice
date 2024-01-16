@@ -9,7 +9,7 @@ class RabbitMQ {
     }
 
     static async connect(queueName) {
-        const amqpServer = process.env.RabbitMQ_UR  || 'amqp://localhost:5672';
+        const amqpServer = process.env.RABBITMQ_URL  || 'amqp://localhost:5672';
         this.connection = await amqp.connect(amqpServer);
         this.channel = await this.connection.createChannel();
         //const queueName = 'PRODUCT'; // Replace with your desired queue name

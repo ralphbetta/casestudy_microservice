@@ -5,12 +5,10 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./src/config/site");
 const User = require("./src/model/account.model");
-const amqp = require("amqplib");
 
 const {db} = require("./src/model/database");
 const CONFIG = require("./src/config/site");
 const router = require("./src/routes/authentication.route");
-const RabbitMQ = require("./src/service/rabbitmq.service");
 const AppService = require("./src/config/service");
 
 class Server {
@@ -28,16 +26,11 @@ class Server {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    RabbitMQ.connect(AppService.AUTHENTICATION);
-
     /*----------------------< DEFAULT ROUTE >----------------*/
 
     app.use(express.static(path.join(__dirname, "/public")));
 
     app.get("/", (req, res) => {
-
-      const data = {name: "Xena", userEmail: "xena@gmail.com"};
-      RabbitMQ.sendToQueue("AUTHENTICATION", data);
 
       res.json(`Authentication Service Running....`);
 

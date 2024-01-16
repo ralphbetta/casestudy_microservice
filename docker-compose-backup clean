@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+
+  # DATABASES ---------------------------- Binding
+  micropsql:
+    container_name: micropsql_c
+    image: postgres:12
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=reportingservice
+      - POSTGRES_USER=psqlusername
+      - POSTGRES_PASSWORD=psqlpassword
+    volumes:
+      - micropsql_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  authservice:
+    build: ./authservice
+    container_name: authservice_c
+    ports:
+      - '8080:8080'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=authenticationservice
+      - PORT=8080
+      - DB_HOST=127.0.0.1
+    depends_on:
+      - micropsql
+      - rabbitmq
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z -w5 micropsql 5432 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./authservice:/app
+      - /Users/betta/Documents/microserv/casestudy/authservice/node_modules
+
+  # RABITTMQ ---------------------------- Binding
+
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"    # AMQP protocol port
+      - "15672:15672"  # HTTP management UI
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  micropsql_db_data: {}
+
