@@ -93,6 +93,25 @@ services:
       - ./notificationservice:/app
       - /Users/betta/Documents/microserv/casestudy/notificationservice/node_modules
 
+  roomservice:
+    build: ./roomservice
+    container_name: roomservice_c
+    ports:
+      - '8083:8083'
+    environment:
+      - DB_USERNAME=psqlusername
+      - DB_PASSWORD=psqlpassword
+      - DB_NAME=roomservice
+      - PORT=8083
+      - DB_HOST=micropsql
+      - JWT_SECRETE=RESTFULAPIs
+      - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+    depends_on:
+      - micropsql
+    volumes:
+      - ./roomservice:/app
+      - /Users/betta/Documents/microserv/casestudy/roomservice/node_modules
+
 
 networks:
   app-network:

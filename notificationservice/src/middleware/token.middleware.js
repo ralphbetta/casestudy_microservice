@@ -25,19 +25,7 @@ class TokenMiddleware {
             
             const email = decoded.userdata.email;
 
-            const userInstance = await httpservice.get("http://127.0.0.1:8080/api/profile", token);
-
-            if(!userInstance){
-                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.unauthorized });
-            }
-
-
-            if(userInstance.data.data.email != email){
-                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.invalid });
-            }
-
-
-            req.userData = userInstance.data.data;
+            req.userData = decoded.userdata;
 
            next();
 

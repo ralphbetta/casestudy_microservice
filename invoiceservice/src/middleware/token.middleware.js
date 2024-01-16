@@ -24,20 +24,10 @@ class TokenMiddleware {
             const decoded = jwt.verify(token, process.env.JWT_SECRETE);
             
             const email = decoded.userdata.email;
+            const id = decoded.userdata.id;
+            const url = `http://127.0.0.1:8080/api/validate/${id}`;
 
-            const userInstance = await httpservice.get("http://127.0.0.1:8080/api/profile", token);
-
-            if(!userInstance){
-                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.unauthorized });
-            }
-
-
-            if(userInstance.data.data.email != email){
-                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.invalid });
-            }
-
-
-            req.userData = userInstance.data.data;
+            req.userData = decoded.userdata;
 
            next();
 

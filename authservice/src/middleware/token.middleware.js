@@ -23,7 +23,7 @@ class TokenMiddleware {
             const decoded = jwt.verify(token, process.env.JWT_SECRETE);
             const email = decoded.userdata.email;
 
-            console.log(email);
+            console.log(email, process.env.JWT_SECRETE);
 
             Account.findOne({ where: { email: email } }).then(async (user) => {
 

@@ -89,6 +89,30 @@ class Authentication {
     }
   }
 
+  static async validate(req, res) {
+
+    const { account_id } = req.params;
+
+    try {
+      const userInstance = await Account.findByPk(account_id);
+
+      const generatedToken = TokenMiddleware.generate({
+        name: userInstance.name,
+        email: userInstance.email,
+        id: userInstance.id,
+      });
+
+      return res.status(200).json({
+        error: false,
+        message: "Succesfull",
+        data: userInstance,
+        token: generatedToken,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "server error", extra: error.message });
+    }
+  }
+
   static async readAll(req, res) {
     try {
       const userInstance = await Account.findAll();
