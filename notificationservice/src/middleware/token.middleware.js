@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const {Account}  = require('../model/database');
 const httpservice = require('../service/http.service');
+const config = require('../config/site');
+
 
 class TokenMiddleware {
 
@@ -25,40 +27,28 @@ class TokenMiddleware {
             
             const email = decoded.userdata.email;
 
-            req.userData = decoded.userdata;
+            const IP = config.site.HOST;
+
+            const userInstance = await httpservice.get('http://authservice:8080/api/profile', token);
+
+            if(!userInstance){
+                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.unauthorized });
+            }
+
+
+            if(userInstance.data.data.email != email){
+                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.invalid });
+            }
+
+
+            req.userData = userInstance.data.data;
+
 
            next();
 
 
          
 
-
-        } catch (err) {
-
-            return res.status(401).json({ message: 'Authentication failed. Token invalid.' });
-        }
-    }
-
-
-
-    static verifyKey = async (req, res, next) => {
-
-
-        try {
-
-            const { key, secret } = req.query;
-
-            if (!key) {
-                return res.status(ResponseMessage.code.unauthorized).json({ error: true, message: ResponseMessage.fail.unauthorized });
-            }
-
-            const findKey = await Validation.findOne({ where: { key: key } })
-
-            if (!findKey) {
-                return res.status(ResponseMessage.code.unauthorized).json({ error: true, message: ResponseMessage.fail.invalid });
-            }
-
-            next();
 
         } catch (err) {
 

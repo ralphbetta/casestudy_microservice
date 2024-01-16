@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const {Account}  = require('../model/database');
 const httpservice = require('../service/http.service');
+const config = require('../config/site');
+
 
 class TokenMiddleware {
 
@@ -24,10 +26,23 @@ class TokenMiddleware {
             const decoded = jwt.verify(token, process.env.JWT_SECRETE);
             
             const email = decoded.userdata.email;
-            const id = decoded.userdata.id;
-            const url = `http://127.0.0.1:8080/api/validate/${id}`;
 
-            req.userData = decoded.userdata;
+            const IP = config.site.HOST;
+
+            const userInstance = await httpservice.get('http://authservice:8080/api/profile', token);
+
+            if(!userInstance){
+                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.unauthorized });
+            }
+
+
+            if(userInstance.data.data.email != email){
+                return res.status(ResponseMessage.code.unauthorized).json({ message: ResponseMessage.fail.invalid });
+            }
+
+
+            req.userData = userInstance.data.data;
+
 
            next();
 

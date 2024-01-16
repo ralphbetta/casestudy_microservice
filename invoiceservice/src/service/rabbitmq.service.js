@@ -72,7 +72,7 @@ class RabbitMQ {
                 auction_status: info.data.status
             }
 
-            const url = `http://127.0.0.1:8081/api/maxbidding/${payload.auction_id}`
+            const url = `http://biddingservice:8081/api/maxbidding/${payload.auction_id}`
 
             console.log(url);
 
