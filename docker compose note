@@ -9,3 +9,14 @@ docker-compose restart notificationservice
 docker-compose restart dockernginx
 #checkingg log of a service 
 docker-compose logs dockernginx
+# To restart everything
+docker-compose restart #-----it only restarts what's on the docker server and dosn't pull anything up
+# run | stop docker compose
+docker-compose up | docker-compose down
+# Cloud rabbitmq dashboard
+https://api.cloudamqp.com/console/d4b5bd37-0a53-4e23-a70f-b09c47791a01/details
+# dummy payment card
+https://paystack.com/docs/payments/test-payments/
+
+# running seperate docker compose
+docker compose -f docker-compose-rabbit.yaml up

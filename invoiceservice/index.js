@@ -32,7 +32,9 @@ class Server {
         console.log('monitoring for', AppService.INVOICE);
 
         RabbitMQ.monitorQueues(channel);
-    });
+    }).catch((error)=>{
+      console.log("------------Something went wrong------------");
+    });;
 
     /*----------------------< DEFAULT ROUTE >----------------*/
 

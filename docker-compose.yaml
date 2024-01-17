@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-
   # DATABASES ---------------------------- Binding
   micropsql:
     container_name: micropsql_c
@@ -16,9 +15,9 @@ services:
     volumes:
       - micropsql_db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
   authservice:
     build: ./authservice
+    restart: on-failure
     container_name: authservice_c
     ports:
       - '8080:8080'
@@ -30,14 +29,18 @@ services:
       - DB_HOST=micropsql
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+      - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
+
     depends_on:
       - micropsql
+      # - rabbitmq
     volumes:
       - ./authservice:/app
       - /Users/betta/Documents/microserv/casestudy/authservice/node_modules
 
   biddingservice:
     build: ./biddingservice
+    restart: on-failure
     container_name: biddingservice_c
     ports:
       - '8081:8081'
@@ -49,7 +52,10 @@ services:
       - DB_HOST=micropsql
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+      - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
+
     depends_on:
+      # - rabbitmq
       - micropsql
     volumes:
       - ./biddingservice:/app
@@ -57,6 +63,7 @@ services:
 
   invoiceservice:
     build: ./invoiceservice
+    restart: on-failure
     container_name: invoiceservice_c
     ports:
       - '8084:8084'
@@ -68,14 +75,17 @@ services:
       - DB_HOST=micropsql
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+      - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
     depends_on:
       - micropsql
+      # - rabbitmq
     volumes:
       - ./invoiceservice:/app
       - /Users/betta/Documents/microserv/casestudy/invoiceservice/node_modules
 
   notificationservice:
     build: ./notificationservice
+    restart: on-failure
     container_name: notificationservice_c
     ports:
       - '8082:8082'
@@ -87,14 +97,17 @@ services:
       - DB_HOST=micropsql
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+      - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
     depends_on:
       - micropsql
+      # - rabbitmq
     volumes:
       - ./notificationservice:/app
       - /Users/betta/Documents/microserv/casestudy/notificationservice/node_modules
 
   roomservice:
     build: ./roomservice
+    restart: on-failure
     container_name: roomservice_c
     ports:
       - '8083:8083'
@@ -106,8 +119,10 @@ services:
       - DB_HOST=micropsql
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
+      - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
     depends_on:
       - micropsql
+      # - rabbitmq
     volumes:
       - ./roomservice:/app
       - /Users/betta/Documents/microserv/casestudy/roomservice/node_modules
@@ -124,11 +139,9 @@ services:
       - invoiceservice
       - notificationservice
       - roomservice
-    # volumes:
-    #   - nginx-root:/var/www/html
-    #   - ./nginx-conf:/etc/nginx/conf.d
-    # networks:
-    #   - app-network
+    volumes:
+      - nginx-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
 
 networks:
   app-network:

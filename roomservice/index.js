@@ -31,6 +31,8 @@ class Server {
     RabbitMQ.connect(AppService.ROOM).then((channel) => {
 
         RabbitMQ.monitorQueues(channel);
+    }).catch((error)=>{
+      console.log("------------Something went wrong------------");
     });
 
     /*----------------------< DEFAULT ROUTE >----------------*/

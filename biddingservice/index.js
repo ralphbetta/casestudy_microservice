@@ -28,7 +28,11 @@ class Server {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    RabbitMQ.connect(AppService.BIDDING);
+    RabbitMQ.connect(AppService.BIDDING).then((channel)=>{
+
+    }).catch((error)=>{
+      console.log("------------Something went wrong------------");
+    });;
 
     /*----------------------< DEFAULT ROUTE >----------------*/
 
