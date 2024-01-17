@@ -111,7 +111,24 @@ services:
     volumes:
       - ./roomservice:/app
       - /Users/betta/Documents/microserv/casestudy/roomservice/node_modules
-
+  
+  dockernginx:
+    build: ./nginx
+    container_name: dockernginx_c
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - authservice
+      - biddingservice
+      - invoiceservice
+      - notificationservice
+      - roomservice
+    # volumes:
+    #   - nginx-root:/var/www/html
+    #   - ./nginx-conf:/etc/nginx/conf.d
+    # networks:
+    #   - app-network
 
 networks:
   app-network:
@@ -119,4 +136,5 @@ networks:
 
 volumes:
   micropsql_db_data: {}
+  nginx-root: {}
 

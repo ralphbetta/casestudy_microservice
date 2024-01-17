@@ -1,0 +1,11 @@
+#check if this service is running
+docker-compose ps notificationservice
+#check all the service runnung
+docker-compose ps
+#check ip address network runned by a container
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' notificationservice_c
+#restarting specific service 
+docker-compose restart notificationservice
+docker-compose restart dockernginx
+#checkingg log of a service 
+docker-compose logs dockernginx

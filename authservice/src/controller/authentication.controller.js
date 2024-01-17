@@ -96,6 +96,12 @@ class Authentication {
     try {
       const userInstance = await Account.findByPk(account_id);
 
+      if(!userInstance){
+        return res
+        .status(ResponseMessage.code.not_found)
+        .json({ error: true, message: ResponseMessage.fail.not_found });
+      }
+
       const generatedToken = TokenMiddleware.generate({
         name: userInstance.name,
         email: userInstance.email,
@@ -106,7 +112,7 @@ class Authentication {
         error: false,
         message: "Succesfull",
         data: userInstance,
-        token: generatedToken,
+        token: "generatedToken",
       });
     } catch (error) {
       res.status(500).json({ error: "server error", extra: error.message });
