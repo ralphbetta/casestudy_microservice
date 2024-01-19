@@ -20,3 +20,23 @@ https://paystack.com/docs/payments/test-payments/
 
 # running seperate docker compose
 docker compose -f docker-compose-rabbit.yaml up
+# To prune and drop everything from containers, images and volumes
+docker system prune -a
+# GETTING READY TO DEPLOY
+
+
+
+
+
+docker images
+docker tag postgres:12 ralphbetta/postgres:v1
+docker tag rabbitmq:3.8-management-alpine ralphbetta/rabbitmq:v1
+docker tag casestudy-biddingservice:latest ralphbetta/casestudy-biddingservice:v1
+docker tag casestudy-roomservice:latest ralphbetta/casestudy-roomservice:v1
+docker tag casestudy-authservice:latest ralphbetta/casestudy-authservice:v1
+docker tag casestudy-invoiceservice:latest ralphbetta/casestudy-invoiceservice:v1
+docker tag casestudy-notificationservice:latest ralphbetta/casestudy-notificationservice:v1
+docker tag casestudy-dockernginx:latest ralphbetta/casestudy-dockernginx:v1
+
+docker push ralphbetta/postgres:v1
+docker push ralphbetta/rabbitmq:v1
