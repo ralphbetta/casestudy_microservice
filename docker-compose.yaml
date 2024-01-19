@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  # DATABASES ---------------------------- Binding
+  # DATABASES ---------------------------------POSTGRES
   micropsql:
     container_name: micropsql_c
     image: postgres:12
@@ -15,6 +15,8 @@ services:
     volumes:
       - micropsql_db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+ # API SERVICE ---------------------------- Authentication Service
   authservice:
     build: ./authservice
     restart: on-failure
@@ -33,11 +35,11 @@ services:
 
     depends_on:
       - micropsql
-      # - rabbitmq
     volumes:
       - ./authservice:/app
       - /Users/betta/Documents/microserv/casestudy/authservice/node_modules
-
+ 
+ # API SERVICE ---------------------------- Bidding Service
   biddingservice:
     build: ./biddingservice
     restart: on-failure
@@ -55,12 +57,12 @@ services:
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
 
     depends_on:
-      # - rabbitmq
       - micropsql
     volumes:
       - ./biddingservice:/app
       - /Users/betta/Documents/microserv/casestudy/biddingservice/node_modules
-
+ 
+ # API SERVICE ---------------------------- Invoice Service
   invoiceservice:
     build: ./invoiceservice
     restart: on-failure
@@ -78,11 +80,11 @@ services:
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
     depends_on:
       - micropsql
-      # - rabbitmq
     volumes:
       - ./invoiceservice:/app
       - /Users/betta/Documents/microserv/casestudy/invoiceservice/node_modules
-
+ 
+ # API SERVICE ---------------------------- Notification Service
   notificationservice:
     build: ./notificationservice
     restart: on-failure
@@ -100,11 +102,11 @@ services:
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
     depends_on:
       - micropsql
-      # - rabbitmq
     volumes:
       - ./notificationservice:/app
       - /Users/betta/Documents/microserv/casestudy/notificationservice/node_modules
-
+ 
+ # API SERVICE ---------------------------- Room Service
   roomservice:
     build: ./roomservice
     restart: on-failure
@@ -122,11 +124,11 @@ services:
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
     depends_on:
       - micropsql
-      # - rabbitmq
     volumes:
       - ./roomservice:/app
       - /Users/betta/Documents/microserv/casestudy/roomservice/node_modules
   
+  # WEBSERVER ---------------------------- Bidding Service
   dockernginx:
     build: ./nginx
     container_name: dockernginx_c
