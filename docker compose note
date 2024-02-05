@@ -20,6 +20,9 @@ https://paystack.com/docs/payments/test-payments/
 
 # running seperate docker compose
 docker compose -f docker-compose-rabbit.yaml up
+# Accessing Rabbit MQ
+http://localhost:15672  # username | passsword: - admin | pass
+
 # To prune and drop everything from containers, images and volumes
 docker system prune -a
 # GETTING READY TO DEPLOY
