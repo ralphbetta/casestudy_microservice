@@ -1,20 +1,20 @@
 version: "3.9"
 
 services:
-  # DATABASES ---------------------------------POSTGRES
-  micropsql:
-    container_name: micropsql_c
-    image: postgres:12
-    restart: unless-stopped
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_DB=reportingservice
-      - POSTGRES_USER=psqlusername
-      - POSTGRES_PASSWORD=psqlpassword
-    volumes:
-      - micropsql_db_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  # # DATABASES ---------------------------------POSTGRES
+  # micropsql:
+  #   container_name: micropsql_c
+  #   image: postgres:12
+  #   restart: unless-stopped
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_DB=reportingservice
+  #     - POSTGRES_USER=psqlusername
+  #     - POSTGRES_PASSWORD=psqlpassword
+  #   volumes:
+  #     - micropsql_db_data:/var/lib/postgresql/data
+  #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
  # API SERVICE ---------------------------- Authentication Service
   authservice:
@@ -150,6 +150,6 @@ networks:
     driver: bridge
 
 volumes:
-  micropsql_db_data: {}
+  # micropsql_db_data: {}
   nginx-root: {}
 

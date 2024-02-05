@@ -16,3 +16,21 @@ services:
       - RABBITMQ_DEFAULT_PASS=pass
     restart: always
 
+
+    # DATABASES ---------------------------------POSTGRES
+  micropsql:
+    container_name: micropsql_c
+    image: postgres:12
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=reportingservice
+      - POSTGRES_USER=psqlusername
+      - POSTGRES_PASSWORD=psqlpassword
+    volumes:
+      - micropsql_db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      
+volumes:
+  micropsql_db_data: {}
