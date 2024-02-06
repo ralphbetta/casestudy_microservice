@@ -62,7 +62,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  Invoice.sync();
+  // Invoice.sync();
 
   return Invoice;
 };

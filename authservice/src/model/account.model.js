@@ -46,7 +46,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   });
 
-  Account.sync();
+  // Account.sync();
 
   return Account;
 };

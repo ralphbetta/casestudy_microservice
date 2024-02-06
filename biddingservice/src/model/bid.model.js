@@ -34,7 +34,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  Bid.sync();
+  // Bid.sync();
 
   return Bid;
 };

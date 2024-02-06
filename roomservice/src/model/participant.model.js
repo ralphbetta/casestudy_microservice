@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  Participant.sync();
+  // Participant.sync();
 
   return Participant;
 };

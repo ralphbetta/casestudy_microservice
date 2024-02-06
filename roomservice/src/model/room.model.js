@@ -45,7 +45,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  Room.sync();
+  // Room.sync();
 
   return Room;
 };

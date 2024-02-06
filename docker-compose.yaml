@@ -1,5 +1,7 @@
 version: "3.9"
 
+# THE TWO DOCKER COMPOSE MUST OPERATE IN THE SAME NETWORK IN OTHER TO WORK
+
 services:
   # # DATABASES ---------------------------------POSTGRES
   # micropsql:
@@ -16,7 +18,7 @@ services:
   #     - micropsql_db_data:/var/lib/postgresql/data
   #     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
- # API SERVICE ---------------------------- Authentication Service
+  # API SERVICE ---------------------------- Authentication Service
   authservice:
     build: ./authservice
     restart: on-failure
@@ -29,15 +31,19 @@ services:
       - DB_NAME=authenticationservice
       - PORT=8080
       - DB_HOST=micropsql
+      - NATS_URI=nats://nats:4222
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
 
-    depends_on:
-      - micropsql
+    # depends_on:
+    #   - micropsql
     volumes:
       - ./authservice:/app
-      - /Users/betta/Documents/microserv/casestudy/authservice/node_modules
+      - /app/node_modules
+    networks:
+      - casestudy
+
  
  # API SERVICE ---------------------------- Bidding Service
   biddingservice:
@@ -52,15 +58,15 @@ services:
       - DB_NAME=binddingservice
       - PORT=8081
       - DB_HOST=micropsql
+      - NATS_URI=nats://nats:4222
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
-
-    depends_on:
-      - micropsql
     volumes:
       - ./biddingservice:/app
-      - /Users/betta/Documents/microserv/casestudy/biddingservice/node_modules
+      - /app/node_modules
+    networks:
+      - casestudy
  
  # API SERVICE ---------------------------- Invoice Service
   invoiceservice:
@@ -75,14 +81,15 @@ services:
       - DB_NAME=invoiceservice
       - PORT=8084
       - DB_HOST=micropsql
+      - NATS_URI=nats://nats:4222
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
-    depends_on:
-      - micropsql
     volumes:
       - ./invoiceservice:/app
-      - /Users/betta/Documents/microserv/casestudy/invoiceservice/node_modules
+      - /app/node_modules
+    networks:
+      - casestudy
  
  # API SERVICE ---------------------------- Notification Service
   notificationservice:
@@ -97,14 +104,15 @@ services:
       - DB_NAME=notificationservice
       - PORT=8082
       - DB_HOST=micropsql
+      - NATS_URI=nats://nats:4222
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
-    depends_on:
-      - micropsql
     volumes:
       - ./notificationservice:/app
-      - /Users/betta/Documents/microserv/casestudy/notificationservice/node_modules
+      - /app/node_modules
+    networks:
+      - casestudy
  
  # API SERVICE ---------------------------- Room Service
   roomservice:
@@ -119,14 +127,15 @@ services:
       - DB_NAME=roomservice
       - PORT=8083
       - DB_HOST=micropsql
+      - NATS_URI=nats://nats:4222
       - JWT_SECRETE=RESTFULAPIs
       - RABBITMQ_URL=amqps://jrzhreof:m6wImZvE2ERmIvEu2wVnOkFB_KBuC6Q3@woodpecker.rmq.cloudamqp.com/jrzhreof
       - DOCKER_RABBITMQ_URL=amqp://admin:pass@rabbitmq:5672
-    depends_on:
-      - micropsql
     volumes:
       - ./roomservice:/app
-      - /Users/betta/Documents/microserv/casestudy/roomservice/node_modules
+      - /app/node_modules
+    networks:
+      - casestudy
   
   # WEBSERVER ---------------------------- Bidding Service
   dockernginx:
@@ -144,12 +153,14 @@ services:
     volumes:
       - nginx-root:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
+    networks:
+      - casestudy
 
 networks:
-  app-network:
+  casestudy:
     driver: bridge
 
 volumes:
-  # micropsql_db_data: {}
+  micropsql_db_data: {}
   nginx-root: {}
 

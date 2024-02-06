@@ -15,9 +15,11 @@ services:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=pass
     restart: always
+    networks:
+      - casestudy
 
 
-    # DATABASES ---------------------------------POSTGRES
+  # DATABASES ---------------------------------POSTGRES
   micropsql:
     container_name: micropsql_c
     image: postgres:12
@@ -31,6 +33,28 @@ services:
     volumes:
       - micropsql_db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - casestudy
+
+
+  # CLOUD NATIVE MESSAGING SYSTEM -------NATS
+
+  nats:
+    image: nats:2.9-alpine
+    container_name: nats-server
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    restart: unless-stopped
+    entrypoint: ["nats-server", "-p", "4222", "-m", "8222"]
+    tty: true
+    networks:
+      - casestudy
+
+
+networks:
+  casestudy:
+    driver: bridge
       
 volumes:
   micropsql_db_data: {}

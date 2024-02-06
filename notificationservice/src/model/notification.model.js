@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
     }
   );
 
-  Notification.sync();
+  // Notification.sync();
 
   return Notification;
 };
