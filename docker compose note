@@ -22,6 +22,8 @@ https://paystack.com/docs/payments/test-payments/
 docker compose -f docker-compose-rabbit.yaml up
 # Accessing Rabbit MQ
 http://localhost:15672  # username | passsword: - admin | pass
+#  Accessing Nat Dashboard on browser
+http://localhost:8222
 
 # To prune and drop everything from containers, images and volumes
 docker system prune -a
