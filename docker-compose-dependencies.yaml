@@ -46,7 +46,7 @@ services:
       - "4222:4222"
       - "8222:8222"
     restart: unless-stopped
-    entrypoint: ["nats-server", "-p", "4222", "-m", "8222"]
+    entrypoint: ["nats-server", "-p", "4222", "-m", "8222", "--jetstream"]
     tty: true
     networks:
       - casestudy
